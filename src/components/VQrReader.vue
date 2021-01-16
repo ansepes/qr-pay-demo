@@ -17,21 +17,32 @@ const { QrcodeStream } = require('vue-qrcode-reader')
   },
 })
 export default class VQrReader extends Vue {
-  CAMERA_ENABLE = 'auto'
+  CAMERA_AUTO = 'auto'
+  CAMERA_REAR = 'rear'
+  CAMERA_FRONT = 'front'
   CAMERA_DISABLEA = 'off'
   error: string = ''
-  camera: string = 'auto'
+  camera: string = 'rear'
+  defaultCamera = 'rear'
 
   @Prop({
     default: true,
   })
   cameraEnable!: boolean
 
+  @Prop({
+    default: true,
+  })
+  cameraRearFront!: boolean
+
   // emits
   @Emit('onDecode')
   handleOnDecode(result: string) {
     return result
   }
+
+  @Emit('onDisableCameraSwitch')
+  onDisableCameraSwitch() {}
 
   // methods
   async onInit(promise: Promise<any>) {
@@ -47,7 +58,10 @@ export default class VQrReader extends Vue {
       } else if (error.name === 'NotReadableError') {
         this.error = 'ERROR: is the camera already in use?'
       } else if (error.name === 'OverconstrainedError') {
-        this.error = 'ERROR: installed cameras are not suitable'
+        // this.error = 'ERROR: installed cameras are not suitable'
+        this.onDisableCameraSwitch()
+        this.camera = this.CAMERA_AUTO
+        this.defaultCamera = this.CAMERA_AUTO
       } else if (error.name === 'StreamApiNotSupportedError') {
         this.error = 'ERROR: このブラウザはカメラが使用できません。'
       }
@@ -58,10 +72,20 @@ export default class VQrReader extends Vue {
   @Watch('cameraEnable')
   onChangeCameraEnable(to: boolean) {
     if (to) {
-      this.camera = this.CAMERA_ENABLE
+      this.camera = this.defaultCamera
     } else {
       this.camera = this.CAMERA_DISABLEA
     }
+  }
+
+  @Watch('cameraRearFront')
+  onChangeCameraRearFront() {
+    if (this.defaultCamera === this.CAMERA_REAR) {
+      this.defaultCamera = this.CAMERA_FRONT
+    } else {
+      this.defaultCamera = this.CAMERA_REAR
+    }
+    this.camera = this.defaultCamera
   }
 }
 </script>

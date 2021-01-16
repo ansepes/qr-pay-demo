@@ -1,7 +1,12 @@
 <template>
   <v-container>
     <v-row>
-      <VQrReader @onDecode="onDecode" :camera-enable="cameraEnable" />
+      <VQrReader
+        @onDecode="onDecode"
+        @onDisableCameraSwitch="onDisableCameraSwitch"
+        :camera-enable="cameraEnable"
+        :camera-rear-front="cameraRearFront"
+      />
     </v-row>
   </v-container>
 </template>
@@ -22,10 +27,18 @@ export default class QrReader extends Vue {
     return qrReaderStoreModule.cameraEnable
   }
 
+  get cameraRearFront() {
+    return qrReaderStoreModule.cameraRearFront
+  }
+
   async onDecode(result: string) {
     if (this.isValidReadValue(result)) {
       qrReaderStoreModule.updateResult(result)
     }
+  }
+
+  onDisableCameraSwitch() {
+    qrReaderStoreModule.setShowCameraSwitch(false)
   }
 
   private isValidReadValue(result: string) {

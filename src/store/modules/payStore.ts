@@ -91,7 +91,7 @@ class PayStore extends VuexModule implements IPayState {
       userId,
       name: '山田 太郎',
       yearMonth: '2021-01',
-      payLimitDay: '2021/02/12',
+      payLimitDay: '2021-02-12',
       totalAmount: 300,
     }
 

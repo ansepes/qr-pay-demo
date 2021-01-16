@@ -9,6 +9,8 @@ class QrReaderStore extends VuexModule implements IQrReaderState {
   RESULT_NONE = ''
   result: string = ''
   cameraEnable: boolean = true
+  cameraRearFront = true
+  showCameraSwitch = true
 
   get getResult() {
     return this.result
@@ -16,6 +18,14 @@ class QrReaderStore extends VuexModule implements IQrReaderState {
 
   get getCameraEnable() {
     return this.cameraEnable
+  }
+
+  get getReverseCameraState() {
+    return this.cameraRearFront
+  }
+
+  get getShowCameraSwitch() {
+    return this.showCameraSwitch
   }
 
   // mutation
@@ -27,6 +37,16 @@ class QrReaderStore extends VuexModule implements IQrReaderState {
   @Mutation
   SET_CAMERA_ENABLE(cameraEnable: boolean) {
     this.cameraEnable = cameraEnable
+  }
+
+  @Mutation
+  SET_CAMERA_REAR_FRONT(cameraRearFront: boolean) {
+    this.cameraRearFront = cameraRearFront
+  }
+
+  @Mutation
+  SET_SHOW_CAMERA_SWITCH(showCameraSwitch: boolean) {
+    this.showCameraSwitch = showCameraSwitch
   }
 
   @Action({ rawError: true })
@@ -53,6 +73,16 @@ class QrReaderStore extends VuexModule implements IQrReaderState {
   @Action({ rawError: true })
   resetResult() {
     this.SET_RESULT(this.RESULT_NONE)
+  }
+
+  @Action({ rawError: true })
+  reverseCamera() {
+    this.SET_CAMERA_REAR_FRONT(!this.cameraRearFront)
+  }
+
+  @Action({ rawError: true })
+  setShowCameraSwitch(showCameraSwitch: boolean) {
+    this.SET_SHOW_CAMERA_SWITCH(showCameraSwitch)
   }
 }
 
